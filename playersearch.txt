@@ -1,0 +1,21 @@
+https://www.leijonat.fi/modules/mod_searchplayersstats/helper/searchplayers.php
+Content-Type: application/x-www-form-urlencoded; charset=UTF-8
+Referrer: https://www.leijonat.fi/index.php/pelaajat
+
+schplrs=Firstname+Lastname&schtms=&schass=&initial=&level=&pid=0&index=0
+
+Response:
+{
+  "players":[
+    {
+      "PersonID":"PERSON_ID",
+      "LastName":"Firname",
+      "FirstName":"Lastname",
+      "DateOfBirth":"DOB",
+      "LinkID":"LINK_ID",
+      "Position":"",
+      "Association":"ASSOC"
+    }
+  ],
+  "count":1
+}

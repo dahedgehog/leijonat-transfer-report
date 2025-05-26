@@ -1,0 +1,20 @@
+{
+  "watch": [
+    "server.js",
+    "save-transfers.js",
+    "enrich-transfers.js",
+    "analyze-transfers.js",
+    "visualize-transfers.js",
+    "*.json"
+  ],
+  "ext": "js,json",
+  "ignore": [
+    "node_modules",
+    "*.test.js",
+    "transfers.json",
+    "enriched-transfers.json",
+    "transfer-analysis.json"
+  ],
+  "verbose": true,
+  "delay": 1000
+}
