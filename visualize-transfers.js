@@ -1,8 +1,13 @@
 const fs = require('fs');
 
+// Get current year for filenames
+const currentYear = new Date().getFullYear();
+const enrichedFilename = `enriched-transfers-${currentYear}.json`;
+const analysisFilename = `transfer-analysis-${currentYear}.json`;
+
 // Read the enriched transfers data and analysis
-const transfers = JSON.parse(fs.readFileSync('enriched-transfers.json', 'utf8'));
-const analysis = JSON.parse(fs.readFileSync('transfer-analysis.json', 'utf8'));
+const transfers = JSON.parse(fs.readFileSync(enrichedFilename, 'utf8'));
+const analysis = JSON.parse(fs.readFileSync(analysisFilename, 'utf8'));
 
 function fillMissingDates(transfersByDate) {
   if (Object.keys(transfersByDate).length === 0) return [];
@@ -533,9 +538,10 @@ function generateHtmlReport() {
 
 // Only generate and save the HTML report when run directly as a script
 if (require.main === module) {
-  const htmlReport = generateHtmlReport();
-  fs.writeFileSync('transfers-report.html', htmlReport);
-  console.log('HTML report generated: transfers-report.html');
+  const outputFilename = `transfers-report-${currentYear}.html`;
+  fs.writeFileSync(outputFilename, generateHtmlReport());
+  
+  console.log(`HTML report generated: ${outputFilename}`);
 }
 
 // Export the function for use in server.js

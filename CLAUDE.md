@@ -31,27 +31,27 @@ This is a hockey player transfer tracking application with a data pipeline archi
 1. **Data Collection** (`save-transfers.js`):
    - Scrapes player transfer data from the Finnish Ice Hockey Federation website
    - Parses HTML tables with JSDOM
-   - Saves raw transfer data to `transfers.json`
+   - Saves raw transfer data to `transfers-YEAR-MONTH.json`
 
 2. **Data Enrichment** (`enrich-transfers.js`):
    - Enhances transfer data with additional player information
    - Maps official club names to short names/abbreviations
    - Fetches player birth years and player IDs from an external API
    - Uses batch processing to handle rate limiting
-   - Saves enriched data to `enriched-transfers.json`
+   - Saves enriched data to `enriched-transfers-YEAR.json`
 
 3. **Data Analysis** (`analyze-transfers.js`):
    - Processes enriched transfer data to generate insights
    - Analyzes transfers by birth year, club activity, and date
    - Calculates net transfer statistics for clubs
-   - Saves analysis results to `transfer-analysis.json`
+   - Saves analysis results to `transfer-analysis-YEAR.json`
 
 4. **Visualization** (`visualize-transfers.js`):
    - Generates an interactive HTML report with Chart.js
    - Creates time-series charts of transfer activity
    - Displays club transfer statistics and player details
    - Provides sortable tables for data exploration
-   - Saves report to `transfers-report.html`
+   - Saves report to `transfers-report-YEAR.html`
 
 5. **Web Server** (`server.js`):
    - Serves the generated HTML report via Express
@@ -60,13 +60,10 @@ This is a hockey player transfer tracking application with a data pipeline archi
 
 ## Data Files
 
-- `transfers.txt`: Contains the URL for the Finnish Ice Hockey Federation transfers page
-- `clubs.txt`: List of Finnish hockey clubs for reference
-- `example.txt`: Contains API request/response example for player data enrichment
-- `transfers.json`: Raw transfer data scraped from the website
-- `enriched-transfers.json`: Transfer data enriched with player birth years and player IDs
-- `transfer-analysis.json`: Analysis results and statistics
-- `transfers-report.html`: Generated HTML visualization
+- `transfers-YEAR-MONTH.json`: Raw transfer data scraped from the website
+- `enriched-transfers-YEAR.json`: Transfer data enriched with player birth years and player IDs
+- `transfer-analysis-YEAR.json`: Analysis results and statistics
+- `transfers-report-YEAR.html`: Generated HTML visualization
 
 ## API Integration
 

@@ -7,7 +7,6 @@ const url = "https://www.palvelusivusto.fi/ih/palvelusivusto/playertransfers/";
 
 /**
  * Fetches player transfers from the Finnish Ice Hockey Federation website and saves to JSON file
- * @param {string} outputFile - Path to the output JSON file
  * @returns {Promise<Array>} - Promise resolving to array of transfers
  */
 function fetchTransfers() {
@@ -66,10 +65,15 @@ function fetchTransfers() {
 
 // Execute the function when the script is run directly
 if (require.main === module) {
+  const currentDate = new Date();
+  const currentYear = currentDate.getFullYear();
+  const currentMonth = (currentDate.getMonth() + 1).toString().padStart(2, '0');
+  const filename = `transfers-${currentYear}-${currentMonth}.json`;
+  
   fetchTransfers()
     .then(transfers => {
-      fs.writeFileSync("transfers.json", JSON.stringify(transfers, null, 2));
-      console.log(`Saved ${transfers.length} transfers to transfers.json`);
+      fs.writeFileSync(filename, JSON.stringify(transfers, null, 2));
+      console.log(`Saved ${transfers.length} transfers to ${filename}`);
     })
     .catch(err => {
       console.error("Failed to fetch and save transfers:", err);

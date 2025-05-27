@@ -136,6 +136,6 @@ dist
 .pnp.*
 
 # app specific
-transfers.json
-enriched-transfers.json
-transfer-analysis.json
+transfers-*.json
+transfer-analysis-*.json
+enriched-transfers-*.json

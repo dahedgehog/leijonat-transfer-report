@@ -3,9 +3,15 @@ const https = require("https");
 const querystring = require("querystring");
 const teamNameMap = require("./team-name-map");
 
-const transfers = JSON.parse(fs.readFileSync("transfers.json", "utf8"));
-const existingEnrichedTransfers = fs.existsSync("enriched-transfers.json")
-  ? JSON.parse(fs.readFileSync("enriched-transfers.json", "utf8")) : [];
+// Get current date information
+const currentDate = new Date();
+const currentMonth = currentDate.getMonth() + 1; // 1-12
+const currentYear = currentDate.getFullYear(); // e.g. 2025
+const enrichedFilename = `enriched-transfers-${currentYear}.json`;
+
+const existingEnrichedTransfers = fs.existsSync(enrichedFilename)
+  ? JSON.parse(fs.readFileSync(enrichedFilename, "utf8")) : [];
+const transfers = loadAllTransfers();
 
 // Function to fetch player data using the API
 async function fetchPlayerData(playerName, newClub) {
@@ -106,16 +112,12 @@ async function fetchPlayerData(playerName, newClub) {
 
 // Process transfers in batches to avoid too many concurrent requests
 async function processTransfers() {
-  const existingTransfersMap = existingEnrichedTransfers.reduce((carry, transfer) => {
-    return { ...carry, [transfer.id]: transfer };
-  }, {});
-
   const transfersToEnrich = transfers.filter(transfer => {
-    return (
-      !existingTransfersMap[transfer.id] ||
-      !existingTransfersMap[transfer.id].playerId ||
-      !existingTransfersMap[transfer.id].birthYear
-    );
+    const existingTransfer = existingEnrichedTransfers.find(
+      t => t.id === transfer.id && t.player === transfer.player);
+    return !existingTransfer || //
+           !existingTransfer.playerId ||
+           !existingTransfer.birthYear;
   });
 
   const newlyEnrichedTransfers = [];
@@ -155,7 +157,9 @@ async function processTransfers() {
 
   // Update existing transfers or add new ones
   for (const newTransfer of newlyEnrichedTransfers) {
-    const existingIndex = updatedTransfers.findIndex(t => t.id === newTransfer.id);
+    const existingIndex = updatedTransfers.findIndex(t =>
+      t.id === newTransfer.id && t.player === newTransfer.player
+    );
     if (existingIndex >= 0) {
       updatedTransfers[existingIndex] = newTransfer;
     } else {
@@ -173,7 +177,12 @@ processTransfers()
     const sortedTransfers = updatedTransfers.sort((a, b) => {
       return new Date(a.date.split(".").reverse().join("-")) - new Date(b.date.split(".").reverse().join("-"));
     });
-    fs.writeFileSync("enriched-transfers.json", JSON.stringify(sortedTransfers, null, 2));
+    
+    // Generate output filename with current year
+    const outputFilename = `enriched-transfers-${currentYear}.json`;
+    
+    // Save to the year-specific file
+    fs.writeFileSync(outputFilename, JSON.stringify(sortedTransfers, null, 2));
 
     // Calculate how many transfers were newly processed
     console.log(`Finished enriching transfers data with player information.
@@ -196,3 +205,22 @@ processTransfers()
   .catch(err => {
     console.error("Error processing transfers:", err);
   });
+
+  // Load all transfer files from the current year up to the current month
+function loadAllTransfers() {
+  let allTransfers = [];
+  
+  // Try to load transfers from each month of the current year
+  for (let month = 1; month <= currentMonth; month++) {
+    const filename = `transfers-${currentYear}-${month.toString().padStart(2, '0')}.json`;
+    
+    if (fs.existsSync(filename)) {
+      console.log(`Loading transfers from ${filename}`);
+      const monthlyTransfers = JSON.parse(fs.readFileSync(filename, "utf8"));
+      allTransfers = [...allTransfers, ...monthlyTransfers];
+    }
+  }
+  
+  console.log(`Loaded ${allTransfers.length} transfers from year ${currentYear} monthly files`);
+  return allTransfers;
+}

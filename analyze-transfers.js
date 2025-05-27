@@ -1,6 +1,11 @@
 const fs = require('fs');
 
-const transfers = JSON.parse(fs.readFileSync('enriched-transfers.json', 'utf8'));
+// Get current year for filenames
+const currentYear = new Date().getFullYear();
+const enrichedFilename = `enriched-transfers-${currentYear}.json`;
+
+console.log(`Using year-specific enriched transfers file: ${enrichedFilename}`);
+const transfers = JSON.parse(fs.readFileSync(enrichedFilename, 'utf8'));
 
 function analyzeTransfers() {
   
@@ -70,5 +75,6 @@ function analyzeTransfers() {
 
 const analysis = analyzeTransfers();
 
-fs.writeFileSync('transfer-analysis.json', JSON.stringify(analysis, null, 2));
-console.log('\nAnalysis saved to transfer-analysis.json');
+const outputFilename = `transfer-analysis-${currentYear}.json`;
+fs.writeFileSync(outputFilename, JSON.stringify(analysis, null, 2));
+console.log(`\nAnalysis saved to ${outputFilename}`);
