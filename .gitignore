@@ -139,3 +139,4 @@ dist
 transfers-*.json
 transfer-analysis-*.json
 enriched-transfers-*.json
+transfers-report-*.html
