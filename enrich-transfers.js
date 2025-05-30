@@ -80,7 +80,9 @@ async function fetchPlayerData(playerName, newClub) {
                 return;
               }
 
-              console.log(`No match found for ${playerName}`);
+              console.log(`No match found for ${playerName} (${newClub}).`);
+              console.log(` - clubs found: [${response.players.map(p => p.Association).filter(c => c).join(", ")}]`);
+              
               resolve({ birthYear: null, playerId: null });
             } else {
               // Only one player found
